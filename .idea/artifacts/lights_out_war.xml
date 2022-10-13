@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="lights-out:war">
+    <output-path>$PROJECT_DIR$/lights-out/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>lights-out</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="lights-out.war">
+      <element id="artifact" artifact-name="lights-out:war exploded" />
+    </root>
+  </artifact>
+</component>
