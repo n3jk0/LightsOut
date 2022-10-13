@@ -4,6 +4,8 @@ import com.example.model.Problem;
 import com.example.model.Solution;
 import com.example.model.SolutionStep;
 import com.google.common.collect.Streams;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
  * @author Nejc Kozlevčar
  */
 public class SolverProcessor {
+    private static final Logger logger = LogManager.getLogger(SolverProcessor.class);
+
     private final int problemSize;
     private final List<Boolean> initialStateAsList;
 
@@ -30,6 +34,7 @@ public class SolverProcessor {
     }
 
     public Solution solveProblem() {
+        logger.debug(String.format("Start solving problem with initialState: %s", convertTo2D(initialStateAsList)));
         long start = System.currentTimeMillis();
         List<String> correctMoves;
         for (int i = 0; i < Math.pow(2, problemSize); i++) {
@@ -38,6 +43,7 @@ public class SolverProcessor {
 
             // Get binary number with starting zeros
             String firstRowMoves = String.format("%" + problemSize + "s", Integer.toBinaryString(i)).replaceAll(" ", "0");
+            logger.debug("Try to solve problem with first move: " + firstRowMoves);
             correctMoves.add(firstRowMoves);
             // Special case for first row
             currentState = makeMovesForRow(firstRowMoves, currentState);
@@ -50,16 +56,16 @@ public class SolverProcessor {
             }
             boolean correctSolution = isCorrectSolution(currentState);
             if (correctSolution) {
-                System.out.println("FINAL SOLUTION: '" + firstRowMoves + "'");
-                System.out.println("Moves: '" + correctMoves + "'");
-                System.out.println("Solution found in " + (System.currentTimeMillis() - start) + "ms");
+                logger.debug("Correct first row moves: " + firstRowMoves);
+                logger.debug(String.format("Moves: %s", correctMoves));
+                logger.info(String.format("Solution '%s' found in %d ms", correctMoves, (System.currentTimeMillis() - start)));
                 String allMoves = String.join("", correctMoves);
                 return createSolution(allMoves);
             } else {
-                System.out.printf("First row move '%S' isn't correct!\n", firstRowMoves);
+                logger.debug(String.format("First row move '%s' isn't correct!", firstRowMoves));
             }
         }
-        System.out.println("Solution wasn't found in " + (System.currentTimeMillis() - start) + "ms");
+        logger.warn("Solution wasn't found in " + (System.currentTimeMillis() - start) + "ms");
         return null;
     }
 
@@ -116,7 +122,11 @@ public class SolverProcessor {
     List<Boolean> makeMovesForRow(String moves, List<Boolean> currentState, int row) {
         int move = moves.indexOf("1");
         while(move >= 0) {
+            logger.debug(String.format("Move: %d in row: %d", move, row));
             currentState = makeMove(currentState, move + (row * problemSize));
+            if (logger.isTraceEnabled()) {
+                logger.trace(String.format("New state: %s", convertTo2D(currentState)));
+            }
             move = moves.indexOf("1", move + 1);
         }
         return currentState;
@@ -127,13 +137,14 @@ public class SolverProcessor {
         return state.stream().noneMatch(Boolean::booleanValue);
     }
 
-    void printTo2D(List<Boolean> state) {
+    String convertTo2D(List<Boolean> state) {
+        StringBuilder state2D = new StringBuilder();
         for (int i = 0; i < state.size(); i++) {
             if (i % 3 == 0) {
-                System.out.println();
+                state2D.append("\n");
             }
-            System.out.print(" " + (state.get(i) ? "1" : "0"));
+            state2D.append(state.get(i) ? "1" : "0").append(" ");
         }
-        System.out.println();
+        return state2D.append("\n").toString();
     }
 }

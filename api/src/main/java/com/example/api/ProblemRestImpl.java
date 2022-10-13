@@ -45,7 +45,7 @@ public class ProblemRestImpl {
     @POST
     @Produces("text/plain")
     public String create() {
-        Problem problem = problemEJB.create();
+        Problem problem = problemEJB.create("0,1,0,1,1,0,1,1,0", 3);
         if (problem == null) {
             return "Problem wasn't saved!";
         }

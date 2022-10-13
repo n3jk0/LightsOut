@@ -2,13 +2,14 @@ package com.example.ejbs.problem;
 
 import com.example.model.Problem;
 import com.example.model.Solution;
-import com.example.model.SolutionStep;
 import com.example.solver.SolverProcessor;
 import com.sun.istack.NotNull;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Stateless
 @LocalBean
 public class ProblemEJB {
+    private static final Logger logger = LogManager.getLogger(ProblemEJB.class);
 
     @PersistenceContext(name = "default")
     private EntityManager entityManager;
@@ -31,15 +33,15 @@ public class ProblemEJB {
         return entityManager.createQuery("select p from Problem p", Problem.class).getResultList();
     }
 
-    public Problem create() {
+    public Problem create(String initialState, Integer problemSize) {
         Problem problem = new Problem();
-        problem.setInitialState("0,1,0,1,1,0,1,1,0");
-        problem.setProblemSize(3);
+        problem.setInitialState(initialState);
+        problem.setProblemSize(problemSize);
 
         SolverProcessor processor = new SolverProcessor(problem);
         Solution solution = processor.solveProblem();
         if (solution == null) {
-            System.out.println("Problem doesn't have solution. Problem is not saved");
+            logger.info("Problem doesn't have solution. Problem wasn't saved");
             return null;
         }
         solution.setProblem(problem);
