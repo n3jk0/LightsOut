@@ -15,6 +15,7 @@
         <module>ejbs</module>
         <module>model</module>
         <module>lights-out</module>
+        <module>web</module>
     </modules>
 
     <properties>

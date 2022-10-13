@@ -1,16 +1,10 @@
 package com.example.solver;
 
 import com.example.model.Problem;
-import com.example.model.Solution;
-import com.example.model.SolutionStep;
-import com.example.solver.SolverProcessor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created 12.10.2022
@@ -21,7 +15,6 @@ public class SolverProcessorTest {
 
     private Problem create3x3Problem() {
         Problem problem = new Problem();
-        //problem.setInitialState("0,1,0,1,1,0,1,1,0");
         problem.setInitialState("1,1,1,0,0,0,0,1,0");
         problem.setProblemSize(3);
         return problem;
@@ -35,8 +28,6 @@ public class SolverProcessorTest {
         initState += "0,0,1,1,0,";
         initState += "1,1,0,1,1,";
         initState += "0,1,1,1,0";
-        //problem.setInitialState("0,1,0,1,1,0,1,1,0");
-        //problem.setInitialState("0,1,1,0,0,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,1,0,1,0,1");
         problem.setInitialState(initState);
         problem.setProblemSize(5);
         return problem;
