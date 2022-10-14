@@ -1,0 +1,36 @@
+<div class="new-div">
+  <form id="newProblem" (ngSubmit)="onClickSubmit()" >
+    <div fxLayout="row">
+      <h3><b>Select problem size: </b></h3>
+      <div fxLayoutAlign="center center" style="padding-left: 10px">
+        <select id="problemSize" name="problemSize" [(ngModel)]="selectedSize" (change)="onChange()">
+          <option name="3" value="3">3</option>
+          <option name="4" value="4">4</option>
+          <option name="5" value="5">5</option>
+          <option name="6" value="6">6</option>
+          <option name="7" value="7">7</option>
+          <option name="8" value="8">8</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="selectedSize" class="button-div">
+      <input type="submit" class="btn play-btn" value="Submit"/>
+    </div>
+  </form>
+
+  <div fxLayout="row">
+    <div class="grid-container size-{{ selectedSize }}" style="margin-top: 10px">
+      <div *ngFor="let s of state; index as i">
+        <app-square [squareIdent]="i" [on]="s === '1'" [clickable]="true" (clickEvent)="selected($event)"></app-square>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedSize" class="button-div">
+    <button class="btn play-btn" (click)="reset()"><b>RESET</b></button>
+  </div>
+</div>
+
+<div *ngIf="savedProblem">
+  <h3>Problem with id: {{savedProblem.id}} was correctly saved!</h3>
+</div>

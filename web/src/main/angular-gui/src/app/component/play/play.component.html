@@ -1,0 +1,19 @@
+<div>
+  <div fxLayoutAlign="center">
+    <h2>Existing problems</h2>
+  </div>
+  <div *ngFor="let n of [3,4,5,6,7,8]">
+    <b>Problems {{ n }}x{{ n }}:</b>
+    <div fxLayout="row grid">
+      <div *ngFor="let problem of problems">
+        <div *ngIf="problem.problemSize === n" class="problem">
+          <a routerLink="{{problem.id}}">
+            <app-problem [problem]="problem" [small]="true"></app-problem>
+          </a>
+        </div>
+      </div>
+    </div>
+    <hr>
+  </div>
+</div>
+

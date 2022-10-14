@@ -30,7 +30,7 @@ public class SolutionRestImpl {
     @Produces("text/plain")
     public Response getAll() {
         List<Solution> allSolutions = solutionEJB.getAll();
-        return Response.ok(RestApiUtils.createGson().toJson(allSolutions)).build();
+        return Response.ok(RestApiUtils.createGson().toJson(allSolutions)).header("Access-Control-Allow-Origin", "*").build();
     }
 
     @GET
@@ -41,7 +41,7 @@ public class SolutionRestImpl {
         if (problem == null) {
             return Response.noContent().build();
         }
-        return Response.ok(RestApiUtils.createGson().toJson(problem.getSolution())).build();
+        return Response.ok(RestApiUtils.createGson().toJson(problem.getSolution())).header("Access-Control-Allow-Origin", "*").build();
     }
 
 

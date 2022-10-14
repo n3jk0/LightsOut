@@ -53,7 +53,7 @@ public class SolverProcessorTest {
 
     @Test
     public void shouldSolveProblem() {
-        Problem problem = create5x5Problem();
+        Problem problem = create3x3Problem();
         SolverProcessor solverProcessor = new SolverProcessor(problem);
 
         solverProcessor.solveProblem();

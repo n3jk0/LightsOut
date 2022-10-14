@@ -1,0 +1,11 @@
+<div fxLayout="column">
+  <div class="grid-container size-{{ problem.problemSize }}">
+    <div *ngFor="let s of state; index as i">
+      <app-square [squareIdent]="i" [small]="small" [on]="s === '1'" [clickable]="clickable" [inSolution]="solutionSteps.includes(i)" (clickEvent)="makeMove($event)"></app-square>
+    </div>
+  </div>
+  <div *ngIf="!small" class="button-div">
+    <button class="btn play-btn" (click)="reset()"><b>RESET</b></button>
+    <button class="btn play-btn" (click)="showSolution()"><b>SOLUTION</b></button>
+  </div>
+</div>

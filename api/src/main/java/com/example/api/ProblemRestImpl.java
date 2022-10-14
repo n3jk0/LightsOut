@@ -1,16 +1,22 @@
 package com.example.api;
 
+import com.example.api.payload.ProblemPayload;
 import com.example.ejbs.problem.ProblemEJB;
 import com.example.model.Problem;
+import com.example.solver.SolverProcessor;
 import com.google.gson.Gson;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -21,14 +27,15 @@ import java.util.List;
 @Path("/problems")
 @Stateless
 public class ProblemRestImpl {
+    private static final Logger logger = LogManager.getLogger(ProblemRestImpl.class);
     @EJB
     private ProblemEJB problemEJB;
 
     @GET
-    @Produces("text/plain")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
         List<Problem> allProblems = problemEJB.getAll();
-        return Response.ok(RestApiUtils.createGson().toJson(allProblems)).build();
+        return Response.ok(RestApiUtils.createGson().toJson(allProblems)).header("Access-Control-Allow-Origin", "*").build();
     }
 
     @GET
@@ -39,16 +46,37 @@ public class ProblemRestImpl {
         if (problem == null) {
             return Response.noContent().build();
         }
-        return Response.ok(RestApiUtils.createGson().toJson(problem)).build();
+        return Response.ok(RestApiUtils.createGson().toJson(problem)).header("Access-Control-Allow-Origin", "*").build();
     }
 
     @POST
-    @Produces("text/plain")
-    public String create() {
-        Problem problem = problemEJB.create("0,1,0,1,1,0,1,1,0", 3);
-        if (problem == null) {
-            return "Problem wasn't saved!";
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response create(ProblemPayload payload) {
+        if (payload == null) {
+            logger.warn("Empty payload. Can't save problem");
+            return Response.serverError().header("Access-Control-Allow-Origin", "*").build();
         }
-        return String.format("Problem with %d id is saved.", problem.getId());
+
+        String initialState = payload.getInitialState();
+        if (initialState == null || initialState.isEmpty()) {
+            logger.warn("Empty initialState. Can't save problem");
+            return Response.serverError().header("Access-Control-Allow-Origin", "*").build();
+        }
+
+        int stateSize = initialState.split(",").length;
+        double problemSize = Math.pow(stateSize, 0.5);
+
+        if (problemSize % 1 != 0) {
+            logger.warn("Wrong initial state. Can't save problem");
+            return Response.serverError().header("Access-Control-Allow-Origin", "*").build();
+        }
+
+        Problem problem = problemEJB.create(initialState, (int)problemSize);
+        if (problem == null) {
+            logger.warn("Problem wasn't saved!");
+            return Response.serverError().header("Access-Control-Allow-Origin", "*").build();
+        }
+        return Response.ok(RestApiUtils.createGson().toJson(problem)).header("Access-Control-Allow-Origin", "*").build();
     }
 }

@@ -10,7 +10,6 @@
         <option value="$PROJECT_DIR$/model/pom.xml" />
         <option value="$PROJECT_DIR$/ejbs/pom.xml" />
         <option value="$PROJECT_DIR$/api/pom.xml" />
-        <option value="$PROJECT_DIR$/lights-out/pom.xml" />
         <option value="$PROJECT_DIR$/web/pom.xml" />
       </list>
     </option>
